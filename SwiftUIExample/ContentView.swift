@@ -27,7 +27,6 @@ import Drops
 struct ContentView: View {
 
   @State var title: String = "Hello There!"
-  @State var subtitle: String = "Use Drops to show alerts"
   @State var positionIndex: Int = 0
   @State var duration: TimeInterval = 2.0
   @State var hasIcon: Bool = false
@@ -43,13 +42,6 @@ struct ContentView: View {
             Spacer()
           }
           TextField("Title", text: $title).textFieldStyle(RoundedBorderTextFieldStyle())
-        }
-        VStack {
-          HStack {
-            Text("Optional Subtitle").font(.caption)
-            Spacer()
-          }
-          TextField("Subtitle", text: $subtitle).textFieldStyle(RoundedBorderTextFieldStyle())
         }
         VStack {
           HStack {
@@ -96,18 +88,17 @@ struct ContentView: View {
   private func showDrop() {
     UIApplication.shared.endEditing()
 
-    let aTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
-    let aSubtitle = subtitle.trimmingCharacters(in: .whitespacesAndNewlines)
+    let aTitle = Drop.Text(title: title.trimmingCharacters(in: .whitespacesAndNewlines), numberOfLines: 2, color: .white)
     let position: Drop.Position = positionIndex == 0 ? .top : .bottom
 
     let icon = hasIcon ? UIImage(systemName: "star.fill") : nil
-    let buttonIcon = hasActionIcon ? UIImage(systemName: "arrowshape.turn.up.left") : nil
+    let buttonTitle = hasActionIcon ? Drop.Text(title: "Action CTA", color: .systemBlue) : nil
 
     let drop = Drop(
       title: aTitle,
-      subtitle: aSubtitle,
+      backgroundColor: .black,
       icon: icon,
-      action: .init(icon: buttonIcon, handler: {
+      action: .init(title: buttonTitle, handler: {
         print("Drop tapped")
         Drops.hideCurrent()
       }),

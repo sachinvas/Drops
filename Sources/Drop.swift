@@ -40,52 +40,36 @@ public struct Drop: ExpressibleByStringLiteral {
   ///   - duration: Duration. Defaults to `Drop.Duration.recommended`.
   ///   - accessibility: Accessibility options. Defaults to `nil` which will use "title, subtitle" as its message.
   public init(
-    title: String,
-    titleNumberOfLines: Int = 1,
-    subtitle: String? = nil,
-    subtitleNumberOfLines: Int = 1,
+    title: Drop.Text,
+    backgroundColor: UIColor = .init(white: 0, alpha: 0.15),
     icon: UIImage? = nil,
     action: Action? = nil,
     position: Position = .top,
     duration: Duration = .recommended,
     accessibility: Accessibility? = nil
   ) {
-    self.title = title.trimmingCharacters(in: .whitespacesAndNewlines)
-    self.titleNumberOfLines = titleNumberOfLines
-    if let subtitle = subtitle?.trimmingCharacters(in: .whitespacesAndNewlines), !subtitle.isEmpty {
-      self.subtitle = subtitle
-    }
-    self.subtitleNumberOfLines = subtitleNumberOfLines
+    self.title = title
+    self.backgroundColor = backgroundColor
     self.icon = icon
     self.action = action
     self.position = position
     self.duration = duration
     self.accessibility = accessibility
-    ?? .init(message: [title, subtitle].compactMap { $0 }.joined(separator: ", "))
+    ?? .init(message: title.title)
   }
 
   /// Create a new accessibility object.
   /// - Parameter message: Message to be announced when the drop is shown. Defaults to drop's "title, subtitle"
   public init(stringLiteral title: String) {
-    self.title = title
-    titleNumberOfLines = 1
-    subtitleNumberOfLines = 1
+    self.title = Drop.Text(title: title)
     position = .top
     duration = .recommended
+    backgroundColor = .init(white: 0, alpha: 0.15)
     accessibility = .init(message: title)
   }
 
   /// Title.
-  public var title: String
-
-  /// Maximum number of lines that `title` can occupy. A value of 0 means no limit.
-  public var titleNumberOfLines: Int
-
-  /// Subtitle.
-  public var subtitle: String?
-
-  /// Maximum number of lines that `subtitle` can occupy. A value of 0 means no limit.
-  public var subtitleNumberOfLines: Int
+  public var title: Drop.Text
 
   /// Icon.
   public var icon: UIImage?
@@ -98,6 +82,9 @@ public struct Drop: ExpressibleByStringLiteral {
 
   /// Duration.
   public var duration: Duration
+    
+  /// BackgroundColor
+  public var backgroundColor: UIColor
 
   /// Accessibility.
   public var accessibility: Accessibility
@@ -111,6 +98,22 @@ public extension Drop {
     /// Drop is presented from bottom.
     case bottom
   }
+}
+
+extension Drop {
+    public struct Text {
+        let title: String
+        let numberOfLines: Int
+        let font: UIFont
+        let color: UIColor
+        
+        public init(title: String, numberOfLines: Int = 1, font: UIFont = .systemFont(ofSize: 12), color: UIColor = .white) {
+            self.title = title
+            self.numberOfLines = numberOfLines
+            self.font = font
+            self.color = color
+        }
+    }
 }
 
 public extension Drop {
@@ -145,13 +148,13 @@ public extension Drop {
     /// - Parameters:
     ///   - icon: Optional icon image.
     ///   - handler: Handler to be called when the drop is tapped.
-    public init(icon: UIImage? = nil, handler: @escaping () -> Void) {
-      self.icon = icon
+    public init(title: Drop.Text? = nil, handler: @escaping () -> Void) {
+      self.title = title
       self.handler = handler
     }
 
     /// Icon.
-    public var icon: UIImage?
+    public var title: Text?
 
     /// Handler.
     public var handler: () -> Void
