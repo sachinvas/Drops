@@ -67,7 +67,8 @@ internal final class DropView: UIView {
       stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: insets.left),
       stackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: insets.top),
       stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -insets.right),
-      stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -insets.bottom)
+      stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -insets.bottom),
+      stackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.9)
     ]
 
     return constraints
